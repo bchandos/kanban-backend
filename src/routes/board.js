@@ -1,24 +1,41 @@
 const express = require('express');
 const router = express.Router();
+const Board = require('../models/board');
 
-router.get('/', (req, res) => {
+router.get('/:id?', async (req, res) => {
     // Read a board
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    if (req.params.id) {
+        const boards = await Board.findByPk(req.params.id);
+        return res.json(boards);
+    } else {
+        const boards = await Board.findAll();
+        return res.json(boards);
+    }
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     // Create a board
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    const body = req.body;
+    const board = await Board.create({
+        name: body.name,
+    })
+    return res.json(board);
 })
 
-router.put('/', (req, res) => {
+router.put('/:id?', async (req, res) => {
     // Update a board
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    const boardId = req.params.id || req.body.id;
+    const board = await Board.findByPk(boardId);
+    board.name = body.name;
+    await board.save();
+    return res.json(board);
 })
 
-router.delete('/', (req, res) => {
-    // Delete a board
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+router.delete('/:id?', async (req, res) => {
+    const boardId = req.params.id || req.body.id;
+    const board = await Board.findByPk(boardId);
+    await board.destroy();
+    return res.json(`Board with id ${req.body.id} destroyed`);
 })
 
 module.exports = router;
