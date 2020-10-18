@@ -1,16 +1,16 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('./index');
+const board = (sequelize, Model, DataTypes) => {
+    class Board extends Model {}
+    Board.init({
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
+    }, {
+        sequelize,
+        modelName: 'Board'
+    });
+    return Board;
+}
 
-class Board extends Model {}
+module.exports = board;
 
-Board.init({
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    }
-}, {
-    sequelize,
-    modelName: 'Board'
-});
-
-module.exports = Board;

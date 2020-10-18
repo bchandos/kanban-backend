@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Board = require('../models/board');
+const sequelize = require('../models');
+
+const Board = sequelize.models.Board;
 
 router.get('/:id?', async (req, res) => {
     // Read a board
@@ -18,6 +20,7 @@ router.post('/', async (req, res) => {
     const body = req.body;
     const board = await Board.create({
         name: body.name,
+        UserId: body.userId
     })
     return res.json(board);
 })
@@ -26,7 +29,7 @@ router.put('/:id?', async (req, res) => {
     // Update a board
     const boardId = req.params.id || req.body.id;
     const board = await Board.findByPk(boardId);
-    board.name = body.name;
+    board.name = req.body.name;
     await board.save();
     return res.json(board);
 })

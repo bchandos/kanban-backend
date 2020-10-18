@@ -1,9 +1,22 @@
 require('dotenv').config()
-const { Sequelize } = require('sequelize');
+const { Sequelize, Model, DataTypes } = require('sequelize');
+const board = require('./board');
+const lane = require('./lane');
+const user = require('./user');
+const card = require('./card');
 
 const sequelize = new Sequelize({
     dialect: process.env.DB_DIALECT,
     storage: process.env.DB_STORAGE,
 });
+
+const Board = board(sequelize, Model, DataTypes);
+const Lane = lane(sequelize, Model, DataTypes);
+const User = user(sequelize, Model, DataTypes);
+const Card = card(sequelize, Model, DataTypes);
+
+User.hasMany(Board);
+Board.hasMany(Lane);
+Lane.hasMany(Card);
 
 module.exports = sequelize;

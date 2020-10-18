@@ -1,24 +1,43 @@
 const express = require('express');
 const router = express.Router();
+const sequelize = require('../models');
 
-router.get('/', (req, res) => {
+const Lane = sequelize.models.Lane;
+
+router.get('/:id?', async (req, res) => {
     // Read a lane
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    if (req.params.id) {
+        const lanes = await Lane.findByPk(req.params.id);
+        return res.json(lanes);
+    } else {
+        const lanes = await Lane.findAll();
+        return res.json(lanes);
+    }
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     // Create a lane
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    const body = req.body;
+    const lane = await Lane.create({
+        name: body.name,
+    })
+    return res.json(lane);
 })
 
-router.put('/', (req, res) => {
+router.put('/:id?', async (req, res) => {
     // Update a lane
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+    const laneId = req.params.id || req.body.id;
+    const lane = await Lane.findByPk(laneId);
+    lane.name = req.body.name;
+    await lane.save();
+    return res.json(lane);
 })
 
-router.delete('/', (req, res) => {
-    // Delete a lane
-    return res.json(`${req.method} request sent to ${req.originalUrl}`);
+router.delete('/:id?', async (req, res) => {
+    const laneId = req.params.id || req.body.id;
+    const lane = await Lane.findByPk(laneId);
+    await lane.destroy();
+    return res.json(`Lane with id ${req.body.id} destroyed`);
 })
 
 module.exports = router;
