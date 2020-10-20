@@ -41,7 +41,7 @@ router.delete('/:id?', async (req, res) => {
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     await card.destroy();
-    return res.json(`Card with id ${req.body.id} destroyed`);
+    return res.json({'status': 'ok', 'id': req.body.id});
 })
 
 // Other routes

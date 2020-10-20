@@ -8,6 +8,11 @@ const card = (sequelize, Model, DataTypes) => {
         contents: {
             type: DataTypes.STRING,
             allowNull: true,
+        },
+        order: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1
         }
     }, {
         sequelize,
