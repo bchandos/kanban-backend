@@ -4,6 +4,8 @@ const sequelize = require('../models');
 
 const Board = sequelize.models.Board;
 
+// CRUD 
+
 router.get('/:id?', async (req, res) => {
     // Read a board
     if (req.params.id) {
@@ -40,5 +42,18 @@ router.delete('/:id?', async (req, res) => {
     await board.destroy();
     return res.json(`Board with id ${req.body.id} destroyed`);
 })
+
+// Other routes
+
+router.get('/:id/lanes', async (req, res) => {
+    // Get all a specific board's lanes
+    const board = await Board.findByPk(req.params.id);
+    if (board) {
+        return res.json(await board.getLanes());
+    } else {
+        return res.json([]);
+    }
+})
+
 
 module.exports = router;
