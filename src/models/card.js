@@ -9,10 +9,10 @@ const card = (sequelize, Model, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        order: {
+        sortOrder: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 1
+            defaultValue: 9999
         }
     }, {
         sequelize,

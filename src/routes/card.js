@@ -23,13 +23,18 @@ router.post('/', async (req, res) => {
     const card = await Card.create({
         name: body.name,
         LaneId: body.laneId,
-    })
-    return res.json(card);
+    });
+    const cards = await Card.scope('ordered').findAll({
+        where: {
+            LaneId: body.laneId
+        }
+    });
+    return res.json(cards);
 })
 
-router.put('/:id?', async (req, res) => {
+router.put('/:id(\d+)', async (req, res) => {
     // Update a card
-    const cardId = req.params.id || req.body.id;
+    const cardId = req.params.id;
     const card = await Card.findByPk(cardId);
     card.name = req.body.name;
     card.LaneId = req.body.laneId;
@@ -37,7 +42,7 @@ router.put('/:id?', async (req, res) => {
     return res.json(card);
 })
 
-router.delete('/:id?', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     await card.destroy();
@@ -45,5 +50,17 @@ router.delete('/:id?', async (req, res) => {
 })
 
 // Other routes
+
+router.put('/reorder', async (req, res) => {
+    const newOrder = req.body.newOrder;
+    
+    const cards = newOrder.map( async (id, index) => {
+        const card = await Card.findByPk(id);
+        return await card.update({sortOrder: index + 1});
+    });
+    // Update ?
+    const resolvedCards = await Promise.all(cards);
+    return res.json(resolvedCards);
+});
 
 module.exports = router;

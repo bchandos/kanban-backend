@@ -49,7 +49,7 @@ router.get('/:id/cards', async (req, res) => {
     // Get all a specific lane's cards
     const lane = await Lane.findByPk(req.params.id);
     if (lane) {
-        return res.json(await lane.getCards());
+        return res.json(await lane.getOrderedCards());
     } else {
         return res.json([]);
     }

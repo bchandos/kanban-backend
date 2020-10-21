@@ -4,6 +4,11 @@ const lane = (sequelize, Model, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        sortOrder: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 9999
         }
     }, {
         sequelize,

@@ -19,9 +19,17 @@ const Lane = lane(sequelize, Model, DataTypes);
 const User = user(sequelize, Model, DataTypes);
 const Card = card(sequelize, Model, DataTypes);
 
+Card.addScope('ordered', {
+    order: [
+        ['sortOrder', 'ASC'],
+        ['id', 'ASC']
+    ]
+})
+
 // Declare associations
 User.hasMany(Board);
 Board.hasMany(Lane);
 Lane.hasMany(Card);
+Lane.hasMany(Card.scope('ordered'), { as: 'orderedCards' });
 
 module.exports = sequelize;
