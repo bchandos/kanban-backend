@@ -32,8 +32,8 @@ router.put('/:id?', async (req, res) => {
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
     lane.name = req.body.name;
-    await lane.save();
-    return res.json(lane);
+    const newLane = await lane.save();
+    return res.json(newLane);
 })
 
 router.delete('/:id?', async (req, res) => {

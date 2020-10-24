@@ -32,12 +32,14 @@ router.post('/', async (req, res) => {
     return res.json(cards);
 })
 
-router.put('/:id(\d+)', async (req, res) => {
+router.put('/:id(\d+)?', async (req, res) => {
     // Update a card
-    const cardId = req.params.id;
+    const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     card.name = req.body.name;
-    card.LaneId = req.body.laneId;
+    if (req.body.laneId) {
+        card.LaneId = req.body.laneId;
+    }
     await card.save();
     return res.json(card);
 })
@@ -53,14 +55,13 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/reorder', async (req, res) => {
     const newOrder = req.body.newOrder;
-    
-    const cards = newOrder.map( async (id, index) => {
-        const card = await Card.findByPk(id);
-        return await card.update({sortOrder: index + 1});
-    });
-    // Update ?
-    const resolvedCards = await Promise.all(cards);
-    return res.json(resolvedCards);
+    const cards = await Promise.all(
+        newOrder.map( async (id, index) => {
+            const card = await Card.findByPk(id);
+            return await card.update({sortOrder: index + 1});
+        })
+    );
+    return res.json(cards);
 });
 
 module.exports = router;
