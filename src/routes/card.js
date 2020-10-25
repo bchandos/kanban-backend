@@ -4,6 +4,19 @@ const sequelize = require('../models');
 
 const Card = sequelize.models.Card;
 
+// Specific routes
+
+router.put('/reorder', async (req, res) => {
+    const newOrder = req.body.newOrder;
+    const cards = await Promise.all(
+        newOrder.map( async (id, index) => {
+            const card = await Card.findByPk(id);
+            return await card.update({sortOrder: index + 1});
+        })
+    );
+    return res.json(cards);
+});
+
 // CRUD
 
 router.get('/:id?', async (req, res) => {
@@ -32,16 +45,17 @@ router.post('/', async (req, res) => {
     return res.json(cards);
 })
 
-router.put('/:id(\d+)?', async (req, res) => {
+router.put('/:id', async (req, res) => {
     // Update a card
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
-    card.name = req.body.name;
-    if (req.body.laneId) {
-        card.LaneId = req.body.laneId;
-    }
-    await card.save();
-    return res.json(card);
+    const updatedCard = await card.update({
+        name: req.body.name || card.name,
+        LaneId: req.body.laneId || card.LaneID,
+        contents: req.body.contents || card.contents,
+        completionPercentage: req.body.completionPercentage || card.completionPercentage,
+    });
+    return res.json(updatedCard);
 })
 
 router.delete('/:id', async (req, res) => {
@@ -50,18 +64,5 @@ router.delete('/:id', async (req, res) => {
     await card.destroy();
     return res.json({'status': 'ok', 'id': req.body.id});
 })
-
-// Other routes
-
-router.put('/reorder', async (req, res) => {
-    const newOrder = req.body.newOrder;
-    const cards = await Promise.all(
-        newOrder.map( async (id, index) => {
-            const card = await Card.findByPk(id);
-            return await card.update({sortOrder: index + 1});
-        })
-    );
-    return res.json(cards);
-});
 
 module.exports = router;

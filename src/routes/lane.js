@@ -4,6 +4,19 @@ const sequelize = require('../models');
 
 const Lane = sequelize.models.Lane;
 
+// Specific routes
+
+router.get('/:id/cards', async (req, res) => {
+    // Get all a specific lane's cards
+    const lane = await Lane.findByPk(req.params.id);
+    if (lane) {
+        return res.json(await lane.getOrderedCards());
+    } else {
+        return res.json([]);
+    }
+})
+
+
 // CRUD
 
 router.get('/:id?', async (req, res) => {
@@ -27,7 +40,7 @@ router.post('/', async (req, res) => {
     return res.json(lane);
 })
 
-router.put('/:id?', async (req, res) => {
+router.put('/:id', async (req, res) => {
     // Update a lane
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
@@ -36,24 +49,11 @@ router.put('/:id?', async (req, res) => {
     return res.json(newLane);
 })
 
-router.delete('/:id?', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
     await lane.destroy();
     return res.json({'status': 'ok', 'id': req.body.id});
 })
-
-// Other routes
-
-router.get('/:id/cards', async (req, res) => {
-    // Get all a specific lane's cards
-    const lane = await Lane.findByPk(req.params.id);
-    if (lane) {
-        return res.json(await lane.getOrderedCards());
-    } else {
-        return res.json([]);
-    }
-})
-
 
 module.exports = router;
