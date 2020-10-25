@@ -13,6 +13,11 @@ const card = (sequelize, Model, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 9999
+        },
+        completionPercentage: {
+            type: DataTypes.FLOAT,
+            allowNull: false,
+            defaultValue: 0.0,
         }
     }, {
         sequelize,
