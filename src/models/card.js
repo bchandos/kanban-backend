@@ -23,27 +23,29 @@ const card = (sequelize, Model, DataTypes) => {
             // Add in a completion percentage value
             // This cannot be done in a VIRTUAL field type because
             // getters and setters cannot be async. Hooks can.
-            afterFind: async (cards) => {
-                if (Array.isArray(cards)) {
-                    for (let card of cards) {
-                        const allTodos = await card.getTodos();
-                        const completedTodos = allTodos.filter(t => t.complete);
-                        if (allTodos.length) {
-                            card.dataValues.completedPercentage = completedTodos.length / allTodos.length;
-                        } else {
-                            card.dataValues.completedPercentage = 0;
-                        }
-                    }
-                } else {
-                    const allTodos = await cards.getTodos();
-                    const completedTodos = allTodos.filter(t => t.complete);
-                    if (allTodos.length) {
-                        cards.dataValues.completedPercentage = completedTodos.length / allTodos.length;
-                    } else {
-                        cards.dataValues.completedPercentage = 0;
-                    }
-                }
-            }
+            // Deprecated for now - doing the calculation on the front end
+            // for reasons related to component scope
+            // afterFind: async (cards) => {
+            //     if (Array.isArray(cards)) {
+            //         for (let card of cards) {
+            //             const allTodos = await card.getTodos();
+            //             const completedTodos = allTodos.filter(t => t.complete);
+            //             if (allTodos.length) {
+            //                 card.dataValues.completedPercentage = completedTodos.length / allTodos.length;
+            //             } else {
+            //                 card.dataValues.completedPercentage = 0;
+            //             }
+            //         }
+            //     } else {
+            //         const allTodos = await cards.getTodos();
+            //         const completedTodos = allTodos.filter(t => t.complete);
+            //         if (allTodos.length) {
+            //             cards.dataValues.completedPercentage = completedTodos.length / allTodos.length;
+            //         } else {
+            //             cards.dataValues.completedPercentage = 0;
+            //         }
+            //     }
+            // }
         },
         sequelize,
         modelName: 'Card'
