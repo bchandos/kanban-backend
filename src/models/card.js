@@ -1,3 +1,7 @@
+// const allTodos = await this.getTodos();
+// const completedTodos = allTodos.filter(t => t.complete);
+// return completedTodos.length / allTodos.length;
+
 const card = (sequelize, Model, DataTypes) => {
     class Card extends Model {}
     Card.init({
@@ -14,12 +18,33 @@ const card = (sequelize, Model, DataTypes) => {
             allowNull: false,
             defaultValue: 9999
         },
-        completionPercentage: {
-            type: DataTypes.FLOAT,
-            allowNull: false,
-            defaultValue: 0.0,
-        }
     }, {
+        hooks: {
+            // Add in a completion percentage value
+            // This cannot be done in a VIRTUAL field type because
+            // getters and setters cannot be async. Hooks can.
+            afterFind: async (cards) => {
+                if (Array.isArray(cards)) {
+                    for (let card of cards) {
+                        const allTodos = await card.getTodos();
+                        const completedTodos = allTodos.filter(t => t.complete);
+                        if (allTodos.length) {
+                            card.dataValues.completedPercentage = completedTodos.length / allTodos.length;
+                        } else {
+                            card.dataValues.completedPercentage = 0;
+                        }
+                    }
+                } else {
+                    const allTodos = await cards.getTodos();
+                    const completedTodos = allTodos.filter(t => t.complete);
+                    if (allTodos.length) {
+                        cards.dataValues.completedPercentage = completedTodos.length / allTodos.length;
+                    } else {
+                        cards.dataValues.completedPercentage = 0;
+                    }
+                }
+            }
+        },
         sequelize,
         modelName: 'Card'
     });

@@ -15,6 +15,7 @@ app.use('/board', routes.board);
 app.use('/lane', routes.lane);
 app.use('/card', routes.card);
 app.use('/user', routes.user);
+app.use('/todo', routes.todo);
 
 app.listen(process.env.PORT, async () => {
     // console.log(sequelize);
