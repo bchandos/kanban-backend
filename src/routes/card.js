@@ -27,27 +27,6 @@ router.get('/:id/todos', async (req, res) => {
     }
 })
 
-router.get('/:id/completion', async (req, res) => {
-    // Get a card's completion percentage
-    // A poor substitute for a class property or virtual field but 
-    // Sequelize does not support async functions there
-    const card = await Card.findByPk(req.params.id);
-    if (card) {
-        const todos = await card.getTodos();
-        if (todos) {
-            const completedTodos = todos.filter(todo => todo.complete);
-            const completionPercentage = completedTodos.length / todos.length;
-            return res.json({
-                value: completionPercentage
-            });
-        } else {
-            return res.json({value: 0});
-        }
-    } else {
-        return res.json();
-    }
-})
-
 // CRUD
 
 router.get('/:id?', async (req, res) => {
