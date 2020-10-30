@@ -6,6 +6,17 @@ const Lane = sequelize.models.Lane;
 
 // Specific routes
 
+router.put('/reorder', async (req, res) => {
+    const newOrder = req.body.newOrder;
+    const lanes = await Promise.all(
+        newOrder.map( async (id, index) => {
+            const lane = await Lane.findByPk(id);
+            return await lane.update({sortOrder: index + 1});
+        })
+    );
+    return res.json(lanes);
+});
+
 router.get('/:id/cards', async (req, res) => {
     // Get all a specific lane's cards
     const lane = await Lane.findByPk(req.params.id);

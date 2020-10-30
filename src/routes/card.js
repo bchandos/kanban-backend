@@ -60,10 +60,9 @@ router.put('/:id', async (req, res) => {
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     const updatedCard = await card.update({
-        name: req.body.name || card.name,
-        LaneId: req.body.laneId || card.LaneID,
-        contents: req.body.contents || card.contents,
-        completionPercentage: req.body.completionPercentage || card.completionPercentage,
+        name: req.body.name,
+        LaneId: req.body.laneId,
+        contents: req.body.contents,
     });
     return res.json(updatedCard);
 })
