@@ -17,13 +17,14 @@ router.get('/:id?', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
-    // Create a user
-    const user = await User.create({
-        name: req.body.name,
-    })
-    return res.json(user);
-})
+// router.post('/', async (req, res) => {
+//     // Create a user
+//     const user = await User.create({
+//         name: req.body.name,
+//         password: req.body.password,
+//     })
+//     return res.json(user);
+// })
 
 router.put('/:id?', async (req, res) => {
     // Update a user

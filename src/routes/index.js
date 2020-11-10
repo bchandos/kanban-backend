@@ -3,6 +3,7 @@ const lane = require('./lane');
 const card = require('./card');
 const user = require('./user');
 const todo = require('./todo');
+const auth = require('./auth');
 
 module.exports = {
     board,
@@ -10,4 +11,5 @@ module.exports = {
     card,
     user,
     todo,
+    auth,
 }

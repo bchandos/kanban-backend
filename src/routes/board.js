@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../models');
+const { authenticateToken } = require('./jwt');
 
 const Board = sequelize.models.Board;
 
 // CRUD 
 
-router.get('/:id?', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     // Read a board
-    if (req.params.id) {
-        const boards = await Board.findByPk(req.params.id);
-        return res.json(boards);
-    } else {
-        const boards = await Board.findAll();
-        return res.json(boards);
-    }
+    const boards = await Board.findByPk(req.params.id);
+    return res.json(boards);
 })
 
 router.post('/', async (req, res) => {
@@ -45,7 +41,7 @@ router.delete('/:id?', async (req, res) => {
 
 // Other routes
 
-router.get('/:id/lanes', async (req, res) => {
+router.get('/:id/lanes', authenticateToken, async (req, res) => {
     // Get all a specific board's lanes
     const board = await Board.findByPk(req.params.id);
     if (board) {
