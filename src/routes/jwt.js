@@ -6,15 +6,19 @@ const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     if (token == null) {
-        return res.status(401); // if there isn't any token
+        res.status(401);
+        return res.json({
+            status: 'Unauthorized',
+            message: 'JSON Web Token not found'
+        })
     }
     try {
         const payload = await jwtVerify(token, process.env.TOKEN_SECRET);
         req.jwtPayload = payload;
-        console.log(`User ID ${payload.userId} authenticated with JWT`);
+        console.log(`User ID ${payload.userId} authenticated with JWT, expires ${new Date(payload.exp*1000)}`);
         next(); // pass the execution off to whatever request the client intended
     } catch (err) {
-        return res.status(403);
+        return res.sendStatus(403);
     }
 }
 

@@ -13,7 +13,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     return res.json(boards);
 })
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     // Create a board
     const body = req.body;
     const board = await Board.create({
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     return res.json(board);
 })
 
-router.put('/:id?', async (req, res) => {
+router.put('/:id?', authenticateToken, async (req, res) => {
     // Update a board
     const boardId = req.params.id || req.body.id;
     const board = await Board.findByPk(boardId);
@@ -32,7 +32,7 @@ router.put('/:id?', async (req, res) => {
     return res.json(board);
 })
 
-router.delete('/:id?', async (req, res) => {
+router.delete('/:id?', authenticateToken, async (req, res) => {
     const boardId = req.params.id || req.body.id;
     const board = await Board.findByPk(boardId);
     await board.destroy();

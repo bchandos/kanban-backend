@@ -5,7 +5,7 @@ const user = (sequelize, Model, DataTypes) => {
     class User extends Model {
         static async authenticate(username, password) {
             const user = await this.findOne({ where: { name: username }});
-            if (bcrypt.compareSync(password, user.password)) {
+            if (user && bcrypt.compareSync(password, user.password)) {
                 return user;
             } 
             return null;

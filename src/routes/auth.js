@@ -1,7 +1,8 @@
 const express = require('express');
+const { authenticate } = require('../models');
 const router = express.Router();
 const sequelize = require('../models');
-const { generateAccessToken } = require('./jwt');
+const { generateAccessToken, authenticateToken } = require('./jwt');
 
 const User = sequelize.models.User;
 
@@ -19,9 +20,9 @@ router.post('/login', async (req, res) => {
     // if the username / password is missing, we use status code 400
     // indicating a bad request was made and send back a message
     if (!username || !password) {
-      return res.status(400).send(
-        'Request missing username or password param'
-      );
+        return res.status(400).send(
+            'Request missing username or password param'
+        );
     }
   
     let user = await User.authenticate(username, password);
@@ -30,10 +31,14 @@ router.post('/login', async (req, res) => {
         // Create JWT and return
         return res.json({jwt: generateAccessToken(user.id)});
     } else {
-        return res.status(403);
+        return res.sendStatus(403);
     }
-  
-  });
+});
+
+router.get('/check-token', authenticateToken, async (req, res) => {
+    // If we've got here, our token is good
+    return res.sendStatus(200);
+});
 
 
 module.exports = router;
