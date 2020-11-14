@@ -9,10 +9,20 @@ const card = require('./card');
 const todo = require('./todo');
 
 // Initialize Sequelize objects
-const sequelize = new Sequelize({
-    dialect: process.env.DB_DIALECT,
-    storage: process.env.DATABASE_URL,
-});
+
+let sequelize;
+console.log(process.env.ENV);
+
+if (process.env.ENV=='development') {
+    sequelize = new Sequelize({
+        dialect: process.env.DB_DIALECT,
+        storage: process.env.DATABASE_URL,
+    });
+} else {
+    sequelize = new Sequelize(process.env.DATABASE_URL, {
+        dialect: process.env.DB_DIALECT,
+    });
+}
 
 // Initialize models
 const Board = board(sequelize, Model, DataTypes);
