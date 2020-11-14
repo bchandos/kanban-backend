@@ -8,7 +8,7 @@ const User = sequelize.models.User;
 
 router.post('/register', async (req, res) => {
     const user = await User.create({
-        name: req.body.name,
+        name: req.body.username,
         password: req.body.password,
     })
     return res.json({jwt: generateAccessToken(user.id)});
