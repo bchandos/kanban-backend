@@ -1,5 +1,4 @@
 const express = require('express');
-const { authenticate } = require('../models');
 const router = express.Router();
 const sequelize = require('../models');
 const { generateAccessToken, authenticateToken } = require('./jwt');
