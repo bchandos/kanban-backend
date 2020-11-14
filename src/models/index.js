@@ -11,7 +11,7 @@ const todo = require('./todo');
 // Initialize Sequelize objects
 const sequelize = new Sequelize({
     dialect: process.env.DB_DIALECT,
-    storage: process.env.DB_STORAGE,
+    storage: process.env.DATABASE_URL,
 });
 
 // Initialize models
