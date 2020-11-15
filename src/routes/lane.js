@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../models');
+const { authenticateToken } = require('./jwt');
 
 const Lane = sequelize.models.Lane;
 
 // Specific routes
 
-router.put('/reorder', async (req, res) => {
+router.put('/reorder', authenticateToken, async (req, res) => {
     const newOrder = req.body.newOrder;
     const lanes = await Promise.all(
         newOrder.map( async (id, index) => {
@@ -17,7 +18,7 @@ router.put('/reorder', async (req, res) => {
     return res.json(lanes);
 });
 
-router.get('/:id/cards', async (req, res) => {
+router.get('/:id/cards', authenticateToken, async (req, res) => {
     // Get all a specific lane's cards
     const lane = await Lane.findByPk(req.params.id);
     if (lane) {
@@ -30,7 +31,7 @@ router.get('/:id/cards', async (req, res) => {
 
 // CRUD
 
-router.get('/:id?', async (req, res) => {
+router.get('/:id?', authenticateToken, async (req, res) => {
     // Read a lane
     if (req.params.id) {
         const lanes = await Lane.findByPk(req.params.id);
@@ -41,7 +42,7 @@ router.get('/:id?', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     // Create a lane
     const body = req.body;
     const lane = await Lane.create({
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
     return res.json(lane);
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
     // Update a lane
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
@@ -60,7 +61,7 @@ router.put('/:id', async (req, res) => {
     return res.json(newLane);
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
     await lane.destroy();

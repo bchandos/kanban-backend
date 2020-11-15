@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../models');
+const { authenticateToken } = require('./jwt');
 
 const Card = sequelize.models.Card;
 
 // Specific routes
 
-router.put('/reorder', async (req, res) => {
+router.put('/reorder', authenticateToken, async (req, res) => {
     const newOrder = req.body.newOrder;
     const cards = await Promise.all(
         newOrder.map( async (id, index) => {
@@ -17,7 +18,7 @@ router.put('/reorder', async (req, res) => {
     return res.json(cards);
 });
 
-router.get('/:id/todos', async (req, res) => {
+router.get('/:id/todos', authenticateToken, async (req, res) => {
     // Get all a specific card's todos
     const card = await Card.findByPk(req.params.id);
     if (card) {
@@ -29,7 +30,7 @@ router.get('/:id/todos', async (req, res) => {
 
 // CRUD
 
-router.get('/:id?', async (req, res) => {
+router.get('/:id?', authenticateToken, async (req, res) => {
     // Read a card
     if (req.params.id) {
         const cards = await Card.findByPk(req.params.id);
@@ -40,7 +41,7 @@ router.get('/:id?', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     // Create a card
     const body = req.body;
     const card = await Card.create({
@@ -55,7 +56,7 @@ router.post('/', async (req, res) => {
     return res.json(cards);
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
     // Update a card
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
@@ -67,7 +68,7 @@ router.put('/:id', async (req, res) => {
     return res.json(updatedCard);
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     await card.destroy();

@@ -11,7 +11,6 @@ const todo = require('./todo');
 // Initialize Sequelize objects
 
 let sequelize;
-console.log(process.env.ENV);
 
 if (process.env.ENV=='development') {
     sequelize = new Sequelize({

@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../models');
+const { authenticateToken } = require('./jwt');
 
 const Todo = sequelize.models.Todo;
 
 // Specific routes
 
-router.put('/reorder', async (req, res) => {
+router.put('/reorder', authenticateToken, async (req, res) => {
     const newOrder = req.body.newOrder;
     const todos = await Promise.all(
         newOrder.map( async (id, index) => {
@@ -19,7 +20,7 @@ router.put('/reorder', async (req, res) => {
 
 // CRUD
 
-router.get('/:id?', async (req, res) => {
+router.get('/:id?', authenticateToken, async (req, res) => {
     // Read a todo
     if (req.params.id) {
         const todos = await Todo.findByPk(req.params.id);
@@ -30,7 +31,7 @@ router.get('/:id?', async (req, res) => {
     }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
     // Create a todo
     const body = req.body;
     const todo = await Todo.create({
@@ -45,7 +46,7 @@ router.post('/', async (req, res) => {
     return res.json(todos);
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
     // Update a todo
     const todoId = req.params.id || req.body.id;
     const todo = await Todo.findByPk(todoId);
@@ -57,7 +58,7 @@ router.put('/:id', async (req, res) => {
     return res.json(updatedTodo);
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
     const todoId = req.params.id || req.body.id;
     const todo = await Todo.findByPk(todoId);
     await todo.destroy();
