@@ -9,3 +9,6 @@ test/*.log
 build/
 *.sqlite
 .env
+
+.vscode/
+.devcontainer/
