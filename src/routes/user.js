@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../models');
-const { authenticateToken } = require('./jwt');
+const { authenticateToken, authenticateAdmin } = require('./jwt');
 
 const User = sequelize.models.User;
 
 // CRUD
 
-router.get('/:id?', authenticateToken, async (req, res) => {
+router.get('/:id?', authenticateAdmin, async (req, res) => {
     // Read a user
     if (req.params.id) {
         const users = await User.findByPk(req.params.id);
@@ -27,20 +27,20 @@ router.get('/:id?', authenticateToken, async (req, res) => {
 //     return res.json(user);
 // })
 
-router.put('/:id?', authenticateToken, async (req, res) => {
+router.put('/:id', authenticateAdmin, async (req, res) => {
     // Update a user
-    const userId = req.params.id || req.body.id;
+    const userId = req.params.id;
     const user = await User.findByPk(userId);
     user.name = req.body.name;
     await user.save();
     return res.json(user);
 })
 
-router.delete('/:id?', authenticateToken, async (req, res) => {
-    const userId = req.params.id || req.body.id;
+router.delete('/:id', authenticateAdmin, async (req, res) => {
+    const userId = req.params.id;
     const user = await User.findByPk(userId);
     await user.destroy();
-    return res.json(`User with id ${req.body.id} destroyed`);
+    return res.json(`User with id ${req.params.id} destroyed`);
 })
 
 // Other routes
