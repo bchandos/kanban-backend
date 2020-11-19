@@ -10,7 +10,7 @@ router.post('/register', async (req, res) => {
         name: req.body.username,
         password: req.body.password,
     })
-    return res.json({jwt: generateAccessToken(user.id)});
+    return res.json({jwt: generateAccessToken(user)});
 });
 
 router.post('/login', async (req, res) => {
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
   
     if (user) {
         // Create JWT and return
-        return res.json({jwt: generateAccessToken(user.id)});
+        return res.json({jwt: generateAccessToken(user)});
     } else {
         return res.sendStatus(403);
     }

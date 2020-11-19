@@ -24,9 +24,9 @@ const authenticateToken = async (req, res, next) => {
     }
 }
 
-const generateAccessToken = (userId) => {
-    return jwt.sign({userId}, process.env.TOKEN_SECRET, { expiresIn: '12h' });
-  }
+const generateAccessToken = (user) => {
+    return jwt.sign({user: {id: user.id, name: user.name, admin: user.admin}}, process.env.TOKEN_SECRET, { expiresIn: '12h' });
+}
 
   
 const authenticateAdmin = async (req, res, next) => {
@@ -43,7 +43,7 @@ const authenticateAdmin = async (req, res, next) => {
     try {
         const payload = await jwtVerify(token, process.env.TOKEN_SECRET);
         req.jwtPayload = payload;
-        const user = await User.findByPk(payload.userId);
+        const user = await User.findByPk(payload.user.id);
         if (!user.admin) {
             throw new Error();
         } else {
