@@ -1,4 +1,3 @@
-const { Sequelize } = require(".");
 const bcrypt = require('bcrypt');
 
 const user = (sequelize, Model, DataTypes) => {
@@ -19,6 +18,11 @@ const user = (sequelize, Model, DataTypes) => {
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        admin: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
     }, {
         hooks: {
