@@ -17,7 +17,7 @@ const authenticateToken = async (req, res, next) => {
     try {
         const payload = await jwtVerify(token, process.env.TOKEN_SECRET);
         req.jwtPayload = payload;
-        console.log(`User ID ${payload.userId} authenticated with JWT, expires ${new Date(payload.exp*1000)}`);
+        console.log(`User ID ${payload.user.id} authenticated with JWT, expires ${new Date(payload.exp*1000)}`);
         next(); // pass the execution off to whatever request the client intended
     } catch (err) {
         return res.sendStatus(403);
@@ -47,7 +47,7 @@ const authenticateAdmin = async (req, res, next) => {
         if (!user.admin) {
             throw new Error();
         } else {
-            console.log(`User ID ${payload.userId} (admin) authenticated with JWT, expires ${new Date(payload.exp*1000)}`);
+            console.log(`User ID ${payload.user.id} (admin) authenticated with JWT, expires ${new Date(payload.exp*1000)}`);
             next(); // pass the execution off to whatever request the client intended
         }
     } catch (err) {
