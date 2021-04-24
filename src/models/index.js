@@ -18,7 +18,7 @@ if (process.env.ENV=='development') {
         storage: process.env.DATABASE_URL,
     });
 } else {
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
+    sequelize = new Sequelize(`${process.env.DATABASE_URL}?sslmode=require`, {
         dialect: process.env.DB_DIALECT,
         native: true,
         ssl: true,
