@@ -21,7 +21,10 @@ if (process.env.ENV=='development') {
     sequelize = new Sequelize(process.env.DATABASE_URL, {
         dialect: process.env.DB_DIALECT,
         dialectOptions: {
-            ssl: {require: true},
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
         }
     });
 }
