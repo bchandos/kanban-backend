@@ -61,9 +61,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const cardId = req.params.id || req.body.id;
     const card = await Card.findByPk(cardId);
     const updatedCard = await card.update({
-        name: req.body.name,
-        LaneId: req.body.laneId,
-        contents: req.body.contents,
+        name: req.body.name || card.name,
+        LaneId: req.body.laneId || card.laneId,
+        contents: req.body.contents || card.contents,
     });
     return res.json(updatedCard);
 })
