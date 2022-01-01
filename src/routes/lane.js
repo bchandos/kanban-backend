@@ -4,6 +4,8 @@ const sequelize = require('../models');
 const { authenticateToken } = require('./jwt');
 
 const Lane = sequelize.models.Lane;
+const Card = sequelize.models.Card;
+const Todo = sequelize.models.Todo;
 
 // Specific routes
 
@@ -26,7 +28,36 @@ router.get('/:id/cards', authenticateToken, async (req, res) => {
     } else {
         return res.json([]);
     }
-})
+});
+
+router.post('/:id/duplicate', authenticateToken, async (req, res) => {
+    // Create a new lane based upon the ID provided
+    const sourceLane = await Lane.findByPk(req.params.id);
+    const newLane = await Lane.create({
+        name: `${sourceLane.name} (copy)`,
+        BoardId: sourceLane.BoardId,
+    });
+    const sourceCards = await sourceLane.getOrderedCards();
+    // Iterate over cards and duplicate
+    for (let sourceCard of sourceCards) {
+        const newCard = await Card.create({
+            LaneId: newLane.id,
+            name: sourceCard.name,
+            contents: sourceCard.contents,
+            sortOrder: sourceCard.sortOrder,
+        });
+        const sourceTodos = await sourceCard.getOrderedTodos();
+        for (let sourceTodo of sourceTodos) {
+            const newTodo = await Todo.create({
+                name: sourceTodo.name,
+                sortOrder: sourceTodo.sortOrder,
+                complete: sourceTodo.complete,
+                CardId: newCard.id
+            });
+        }
+    }
+    return res.json(newLane);
+});
 
 
 // CRUD
@@ -40,7 +71,7 @@ router.get('/:id?', authenticateToken, async (req, res) => {
         const lanes = await Lane.findAll();
         return res.json(lanes);
     }
-})
+});
 
 router.post('/', authenticateToken, async (req, res) => {
     // Create a lane
@@ -50,7 +81,7 @@ router.post('/', authenticateToken, async (req, res) => {
         BoardId: body.boardId,
     })
     return res.json(lane);
-})
+});
 
 router.put('/:id', authenticateToken, async (req, res) => {
     // Update a lane
@@ -59,13 +90,13 @@ router.put('/:id', authenticateToken, async (req, res) => {
     lane.name = req.body.name;
     const newLane = await lane.save();
     return res.json(newLane);
-})
+});
 
 router.delete('/:id', authenticateToken, async (req, res) => {
     const laneId = req.params.id || req.body.id;
     const lane = await Lane.findByPk(laneId);
     await lane.destroy();
     return res.json({'status': 'ok', 'id': req.body.id});
-})
+});
 
 module.exports = router;
