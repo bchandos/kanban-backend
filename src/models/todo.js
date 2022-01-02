@@ -14,6 +14,11 @@ const todo = (sequelize, Model, DataTypes) => {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
+        },
+        note: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultvalue: null,
         }
     }, {
         sequelize,
