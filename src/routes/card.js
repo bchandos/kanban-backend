@@ -63,7 +63,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const updatedCard = await card.update({
         name: req.body.name || card.name,
         LaneId: req.body.laneId || card.laneId,
-        contents: req.body.contents || card.contents,
+        contents: req.body.contents ?? card.contents,
     });
     return res.json(updatedCard);
 })

@@ -54,6 +54,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         name: req.body.name || todo.name,
         CardId: req.body.cardId || todo.CardId,
         complete: req.body.complete,
+        note: req.body.note ?? todo.note,
     });
     return res.json(updatedTodo);
 })
