@@ -20,7 +20,29 @@ app.use('/auth', routes.auth);
 
 app.listen(process.env.PORT, async () => {
     // console.log(sequelize);
-    await sequelize.sync();
+    const s = await sequelize.sync();
+    // If DEMO_MODE is active, create demo user and board
+    // console.log(s);
+    if (process.env.DEMO_MODE == "true" && s) {
+        const { User, Board, Lane, Card } = s.models;
+        const demoUser = await User.create({
+            name: "demo",
+            password: "demo25",
+        });
+        const demoBoard = await Board.create({
+            name: "Demo Board",
+            UserId: demoUser.id,
+        });
+        const demoLane = await Lane.create({
+            name: "Demo Lane",
+            BoardId: demoBoard.id,
+        });
+        const demoCard = await Card.create({
+            LaneId: demoLane.id,
+            name: "Demo Card",
+            contents: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vitae libero vehicula, euismod quam in, varius risus. Duis sit amet.",
+        });
+    }
     console.log('All models were synchronized successfully.')
     console.log(`Kanban app listening on port ${process.env.PORT}`);
 })

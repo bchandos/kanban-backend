@@ -12,7 +12,7 @@ const todo = require('./todo');
 
 let sequelize;
 
-if (process.env.ENV=='development') {
+if (process.env.ENV == 'development') {
     sequelize = new Sequelize({
         dialect: process.env.DB_DIALECT,
         storage: process.env.DATABASE_URL,
@@ -57,7 +57,7 @@ Lane.hasMany(Card);
 Lane.hasMany(Card.scope('ordered'), { as: 'orderedCards' });
 Card.belongsTo(Lane);
 Card.hasMany(Todo);
-Card.hasMany(Todo.scope('ordered'), { as: 'orderedTodos'});
+Card.hasMany(Todo.scope('ordered'), { as: 'orderedTodos' });
 Todo.belongsTo(Card);
 
 module.exports = sequelize;
