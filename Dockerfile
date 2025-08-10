@@ -1,6 +1,6 @@
 FROM node:22
 
-WORKDIR /usr/app
+WORKDIR /usr/src/app
 
 RUN npm install
 
