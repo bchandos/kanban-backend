@@ -11,12 +11,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/board', routes.board);
-app.use('/lane', routes.lane);
-app.use('/card', routes.card);
-app.use('/user', routes.user);
-app.use('/todo', routes.todo);
-app.use('/auth', routes.auth);
+const baseUrl = process.env.BASE_URL || "/";
+
+app.use(`${baseUrl}board`, routes.board);
+app.use(`${baseUrl}lane`, routes.lane);
+app.use(`${baseUrl}card`, routes.card);
+app.use(`${baseUrl}user`, routes.user);
+app.use(`${baseUrl}todo`, routes.todo);
+app.use(`${baseUrl}auth`, routes.auth);
 
 app.listen(process.env.PORT, async () => {
     // console.log(sequelize);
