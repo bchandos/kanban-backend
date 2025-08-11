@@ -21,7 +21,10 @@ app.use(`${baseUrl}todo`, routes.todo);
 app.use(`${baseUrl}auth`, routes.auth);
 
 app.listen(process.env.PORT, async () => {
-    // console.log(sequelize);
+    if (process.env.DEMO_MODE == "true") {
+        await sequelize.drop();
+        console.log("All tables dropped in Demo mode.");
+    }
     const s = await sequelize.sync();
     // If DEMO_MODE is active, create demo user and board
     // console.log(s);
